@@ -40,6 +40,14 @@ pipeline {
             }
         }
 
+        stage('5️⃣ Archive Artifact') {
+            steps {
+                echo '📁 Archivage du fichier JAR...'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                echo '✅ Artifact archivé'
+            }
+        }
+
     } // fermeture du bloc stages
 
     post {
