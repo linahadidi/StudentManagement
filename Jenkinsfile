@@ -32,6 +32,14 @@ pipeline {
             }
         }
 
+        stage('4️⃣ Package JAR') {
+            steps {
+                echo '📦 Packaging final en JAR...'
+                sh 'mvn clean package -DskipTests'
+                echo '✅ JAR prêt'
+            }
+        }
+
     } // fermeture du bloc stages
 
     post {
