@@ -40,7 +40,59 @@ pipeline {
             }
         }
 
-        stage('5️⃣ Archive Artifact') {
+        stage('5️⃣ Build Docker Image') {
+            steps {
+                echo '🐳 Construction de l\'image Docker...'
+                script {
+                    docker.build("linahadidi/student-app:${env.BUILD_ID}")
+                }
+                echo '✅ Image Docker construite'
+            }
+        }
+
+        stage('6️⃣ Push Docker Image') {
+            steps {
+                echo '📤 Pushing de l\'image vers Docker Hub...'
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        docker.image("linahadidi/student-app:${env.BUILD_ID}").push()
+                        docker.image("linahadidi/student-app:${env.BUILD_ID}").push('latest')
+                    }
+                }
+                echo '✅ Image poussée vers Docker Hub'
+            }
+        }
+
+        stage('7️⃣ Deploy to Kubernetes') {
+            steps {
+                echo '🚀 Déploiement sur Kubernetes...'
+                sh '''
+                    # Appliquer les configurations Kubernetes
+                    kubectl apply -f k8s/mysql-deployment.yaml -n devops
+                    kubectl apply -f k8s/spring-deployment.yaml -n devops
+                    
+                    # Attendre que les pods soient prêts
+                    sleep 30
+                    kubectl get pods -n devops
+                '''
+                echo '✅ Déploiement Kubernetes terminé'
+            }
+        }
+
+        stage('8️⃣ Verification') {
+            steps {
+                echo '🔍 Vérification du déploiement...'
+                sh '''
+                    kubectl get pods -n devops
+                    kubectl get svc -n devops
+                    echo "Application disponible sur:"
+                    minikube service spring-service -n devops --url || true
+                '''
+                echo '✅ Vérification terminée'
+            }
+        }
+
+        stage('9️⃣ Archive Artifact') {
             steps {
                 echo '📁 Archivage du fichier JAR...'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
@@ -56,6 +108,8 @@ pipeline {
         }
         success {
             echo '🎉 Pipeline terminé avec succès'
+            echo '🌐 Application déployée sur Kubernetes'
+            echo '📊 Vérifiez avec: kubectl get all -n devops'
         }
     } // fermeture du bloc post
 } // fermeture du bloc pipeline
