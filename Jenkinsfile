@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -16,19 +15,15 @@ pipeline {
                 echo '✅ Clonage terminé'
             }
         }
-        
-    }
 
-        stage('5️⃣ Archive Artifact') {
-            steps {
-                echo '📁 Archivage du fichier JAR...'
-                archiveArtifacts artifactspost {
+    } // fermeture du bloc stages
+
+    post {
         failure {
             echo '❌ Le pipeline a échoué'
         }
         success {
             echo '🎉 Pipeline terminé avec succès'
         }
-    }
-}
-github.com
+    } // fermeture du bloc post
+} // fermeture du bloc pipeline
