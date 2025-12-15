@@ -24,6 +24,14 @@ pipeline {
             }
         }
 
+        stage('3️⃣ Test & Package (Tests Sautés)') {
+            steps {
+                echo '📦 Packaging du projet (tests sautés)...'
+                sh 'mvn package -DskipTests'
+                echo '✅ Packaging terminé'
+            }
+        }
+
     } // fermeture du bloc stages
 
     post {
