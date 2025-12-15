@@ -16,6 +16,14 @@ pipeline {
             }
         }
 
+        stage('2️⃣ Build Project') {
+            steps {
+                echo '🔨 Compilation du projet avec Maven...'
+                sh 'mvn clean compile -DskipTests'
+                echo '✅ Build terminé'
+            }
+        }
+
     } // fermeture du bloc stages
 
     post {
