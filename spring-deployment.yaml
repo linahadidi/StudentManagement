@@ -1,0 +1,66 @@
+# Déploiement Spring Boot
+
+---
+# 1. ConfigMap pour l'URL de la DB
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-config
+data:
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/springdb
+
+---
+# 2. Secret pour les credentials DB
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spring-secret
+type: Opaque
+data:
+  SPRING_DATASOURCE_USERNAME: c3ByaW5n
+  SPRING_DATASOURCE_PASSWORD: c3ByaW5nMTIz
+
+---
+# 3. Deployment Spring Boot CORRIGÉ
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-app
+  template:
+    metadata:
+      labels:
+        app: spring-app
+    spec:
+      containers:
+      - name: spring-app
+        image: linahadidi/alpine:1.0.0
+        # Commande pour garder le container en vie
+        command: ["tail"]
+        args: ["-f", "/dev/null"]
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: spring-config
+        - secretRef:
+            name: spring-secret
+
+---
+# 4. Service (NodePort)
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-service
+spec:
+  selector:
+    app: spring-app
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+  type: NodePort
