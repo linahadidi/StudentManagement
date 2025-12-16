@@ -28,7 +28,14 @@
     </scm>
     <properties>
         <java.version>17</java.version>
+        
+        <!-- ============= CONFIGURATION SONARQUBE ============= -->
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.projectKey>student-management</sonar.projectKey>
+        <sonar.projectName>Student Management</sonar.projectName>
+        <!-- ================================================== -->
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,7 +70,7 @@
     </dependencies>
 
     <build>
-    <plugins>
+        <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -76,7 +83,14 @@
                     </excludes>
                 </configuration>
             </plugin>
+            
+            <!-- ============= PLUGIN SONARQUBE ============= -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.11.0.3922</version>
+            </plugin>
+            <!-- ============================================ -->
         </plugins>
     </build>
-
 </project>
