@@ -22,7 +22,7 @@ pipeline {
                 echo '📝 Création du Dockerfile...'
                 sh '''
                     # Créer un Dockerfile CORRECT sans EOF problématique
-                    echo 'FROM openjdk:17-jdk-slim' > Dockerfile
+                    echo 'FROM openjdk:17-slim' > Dockerfile
                     echo 'WORKDIR /app' >> Dockerfile
                     echo 'COPY target/*.jar app.jar' >> Dockerfile
                     echo 'EXPOSE 8080' >> Dockerfile
